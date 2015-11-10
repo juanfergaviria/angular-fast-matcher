@@ -440,9 +440,16 @@
           }
 
           if (attrs.ngModel) {
-            parentScope.$watch(attrs.ngModel, function() {
-              refreshMatches(parentScope[attrs.ngModel]);
-            });
+            if(attrs.ngModel.indexOf('.')) {
+              var ngModel = attrs.ngModel.split('.');
+              parentScope.$watchCollection(ngModel[0], function(newValue, oldValue) {
+                refreshMatches(newValue[ngModel[1]]);
+              });
+            } else {
+              parentScope.$watch(attrs.ngModel, function() {
+                refreshMatches(parentScope[attrs.ngModel]);
+              });
+            }
 
           } else {
             element.on('keyup', function() {
